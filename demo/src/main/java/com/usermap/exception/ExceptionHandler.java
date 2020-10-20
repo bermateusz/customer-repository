@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class ExceptionHandler {
     @org.springframework.web.bind.annotation.ExceptionHandler(CustomerDoesNotExistException.class)
     public ResponseEntity<?> handleCustomerDoesNotExistException(CustomerDoesNotExistException exception, WebRequest request){
-        ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), exception.getMessage(),request.getDescription(false),HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+        ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), exception.getMessage(),request.getDescription(false),HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

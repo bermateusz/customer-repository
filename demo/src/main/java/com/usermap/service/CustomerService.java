@@ -1,53 +1,54 @@
 package com.usermap.service;
 
-import com.usermap.entity.Customer;
-import com.usermap.exception.CustomerDoesNotExistException;
+import com.usermap.entity.CustomerDTO;
 import com.usermap.entity.SavedCustomer;
+import com.usermap.exception.CustomerDoesNotExistException;
+import com.usermap.repository.CustomerRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class CustomerService {
-    private static final Map<UUID, Customer> CUSTOMER_MAP = new HashMap<>();
+    private final CustomerRepository customerRepository;
 
-    public Customer findCustomer(UUID uuid) {
-        return Optional.ofNullable(CUSTOMER_MAP.get(uuid))
-                .orElseThrow(() -> new CustomerDoesNotExistException("Customer with UUID: " + uuid + " does not exist."));
+    public CustomerService(CustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
     }
 
-    public List<SavedCustomer> findAll() {
-        return CUSTOMER_MAP.entrySet().stream()
-                 .map(entry -> new SavedCustomer(entry.getKey(), entry.getValue()))
-                 .collect(Collectors.toList());
+    public SavedCustomer findCustomerByID(Integer id) {
+        return customerRepository.findById(id)
+                .orElseThrow(() -> new CustomerDoesNotExistException("Customer with UUID: " + id + " does not exist."));
     }
 
-    public Map<UUID, Customer> getCustomerMap() {
-        return CUSTOMER_MAP;
+    public SavedCustomer addToDB(CustomerDTO customerDTO) {
+        SavedCustomer savedCustomer = new SavedCustomer(customerDTO);
+        customerRepository.save(savedCustomer);
+        return savedCustomer;
     }
 
-    public SavedCustomer addCustomer(Customer customer) {
-        final UUID uuid = UUID.randomUUID();
-        CUSTOMER_MAP.put(uuid, customer);
-        return new SavedCustomer(uuid, customer);
+
+    public Iterable<SavedCustomer> findAll() {
+        return customerRepository.findAll();
     }
 
-    public void modifyCustomer(UUID uuid, Customer customer) {
-        if (!CUSTOMER_MAP.containsKey(uuid)) {
-            throw new CustomerDoesNotExistException("Customer with UUID: " + uuid + " does not exist.");
-        } else {
-            CUSTOMER_MAP.replace(uuid, customer);
+    public SavedCustomer modifyCustomer(Integer id, CustomerDTO customerDTO) {
+         SavedCustomer customerToUpdate = customerRepository.findById(id)
+                .orElseThrow(() -> new CustomerDoesNotExistException("Customer with UUID: " + id + " does not exist."));
+        customerToUpdate.setCustomerName(customerDTO.getCustomerName());
+        customerToUpdate.setCustomerSurname(customerDTO.getCustomerSurname());
+        customerToUpdate.setAge(customerDTO.getAge());
+        customerToUpdate.setAddress(customerDTO.getAddress());
+        customerToUpdate.setCity(customerDTO.getCity());
+        return customerRepository.save(customerToUpdate);
+    }
+
+    public void deleteCustomer(Integer id) {
+        try {
+            customerRepository.deleteById(id);
+        } catch (CustomerDoesNotExistException e) {
+            throw new CustomerDoesNotExistException("Customer with UUID: " + id + " does not exist.");
         }
     }
-
-    public void deleteCustomer(UUID uuid) {
-        if (!CUSTOMER_MAP.containsKey(uuid)) {
-            throw new CustomerDoesNotExistException("Customer with UUID: " + uuid + " does not exist.");
-        } else {
-            CUSTOMER_MAP.remove(uuid);
-        }
-    }
-
-
 }
+
+
+

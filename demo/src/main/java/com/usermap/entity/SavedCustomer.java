@@ -1,39 +1,75 @@
 package com.usermap.entity;
 
-import java.util.UUID;
+import javax.persistence.*;
 
+@Entity
+@Table(name = "customer")
 public class SavedCustomer {
-    private final UUID uuid;
-    private final String name;
-    private final String surname;
-    private final int age;
-    private final Address address;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
+    private String customerName;
+    private String customerSurname;
+    private int age;
+    private String address;
+    private String city;
 
-    public SavedCustomer(UUID uuid, Customer customer) {
-        this.uuid = uuid;
-        this.name = customer.getName();
-        this.surname = customer.getSurname();
-        this.age = customer.getAge();
-        this.address = customer.getAddress();
+    public SavedCustomer() {
     }
 
-    public UUID getUuid() {
-        return uuid;
+    public SavedCustomer(CustomerDTO customerDTO) {
+        this.customerName = customerDTO.getCustomerName();
+        this.customerSurname = customerDTO.getCustomerSurname();
+        this.age = customerDTO.getAge();
+        this.address = customerDTO.getAddress();
+        this.city = customerDTO.getCity();
     }
 
-    public String getName() {
-        return name;
+    public Integer getId() {
+        return id;
     }
 
-    public String getSurname() {
-        return surname;
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public String getCustomerSurname() {
+        return customerSurname;
+    }
+
+    public void setCustomerSurname(String customerSurname) {
+        this.customerSurname = customerSurname;
     }
 
     public int getAge() {
         return age;
     }
 
-    public Address getAddress() {
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getAddress() {
         return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 }

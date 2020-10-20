@@ -1,14 +1,12 @@
 package com.usermap.controller;
 
-import com.usermap.entity.Customer;
+import com.usermap.entity.CustomerDTO;
+import com.usermap.entity.SavedCustomer;
 import com.usermap.exception.CustomerDoesNotExistException;
 import com.usermap.service.CustomerService;
-import com.usermap.entity.SavedCustomer;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 public class CustomerController {
@@ -20,31 +18,33 @@ public class CustomerController {
     }
 
     @PostMapping(value = "/api/customers")
-    public SavedCustomer addCustomer(@RequestBody Customer customer) {
-       return customerService.addCustomer(customer);
+    public SavedCustomer addCustomer(@RequestBody CustomerDTO customerDTO) {
+        return customerService.addToDB(customerDTO);
+    }
+
+    @GetMapping(value = "/api/customers/{id}")
+    public SavedCustomer findCustomerByID(@PathVariable Integer id) {
+        return Optional.ofNullable(customerService.findCustomerByID(id))
+                .orElseThrow(() -> new CustomerDoesNotExistException("Customer with UUID: " + id + " does not exist."));
     }
 
     @GetMapping(value = "/api/customers")
-    public List<SavedCustomer> returnCustomersAsList() {
+    public Iterable<SavedCustomer> findAllCustomers() {
         return customerService.findAll();
     }
 
-    @PutMapping(value = "/api/customers/{uuid}")
-    public void modifyCustomer(@PathVariable UUID uuid, @RequestBody Customer customer) {
-        customerService.modifyCustomer(uuid, customer);
+    @DeleteMapping(value = "/api/customers/{id}")
+    public void deleteCustomer(@PathVariable Integer id) {
+        try {
+            customerService.deleteCustomer(id);
+        } catch (CustomerDoesNotExistException e) {
+            throw new CustomerDoesNotExistException("Nie istnieje mordo");
+        }
     }
 
-    @DeleteMapping(value = "/api/customers/{uuid}")
-    public void deleteCustomer(@PathVariable UUID uuid) {
-        customerService.deleteCustomer(uuid);
+    @PostMapping(value = "/api/customers/{id}")
+    public SavedCustomer modifyCustomer(@PathVariable Integer id, @RequestBody CustomerDTO customerDTO) {
+        return Optional.of(customerService.modifyCustomer(id, customerDTO))
+                .orElseThrow(() -> new CustomerDoesNotExistException("Customer with UUID: " + id + " does not exist."));
     }
-
-    @GetMapping(value = "/api/customers/{uuid}")
-    public Customer returnCustomer(@PathVariable UUID uuid){
-        return Optional.ofNullable(customerService.findCustomer(uuid))
-                .orElseThrow(() -> new CustomerDoesNotExistException("Customer with UUID: " + uuid + " does not exist."));
-//        return this.customerService.findCustomer(uuid).orElseThrow(() -> new CustomerDoesNotExistException());
-    }
-
-
 }
