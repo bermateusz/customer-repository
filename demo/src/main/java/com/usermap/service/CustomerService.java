@@ -4,6 +4,7 @@ import com.usermap.entity.CustomerDTO;
 import com.usermap.entity.SavedCustomer;
 import com.usermap.exception.CustomerDoesNotExistException;
 import com.usermap.repository.CustomerRepository;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -44,7 +45,7 @@ public class CustomerService {
     public void deleteCustomer(Integer id) {
         try {
             customerRepository.deleteById(id);
-        } catch (CustomerDoesNotExistException e) {
+        } catch (EmptyResultDataAccessException e) {
             throw new CustomerDoesNotExistException("Customer with UUID: " + id + " does not exist.");
         }
     }

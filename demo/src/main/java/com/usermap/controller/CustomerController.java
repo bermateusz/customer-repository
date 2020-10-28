@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
+@RequestMapping(value = "/customers")
 public class CustomerController {
     private final CustomerService customerService;
 
@@ -17,34 +18,29 @@ public class CustomerController {
         this.customerService = customerService;
     }
 
-    @PostMapping(value = "/api/customers")
+    @RequestMapping(method = RequestMethod.POST)
     public SavedCustomer addCustomer(@RequestBody CustomerDTO customerDTO) {
         return customerService.addToDB(customerDTO);
     }
 
-    @GetMapping(value = "/api/customers/{id}")
+    @GetMapping(value = "/{id}")
     public SavedCustomer findCustomerByID(@PathVariable Integer id) {
         return Optional.ofNullable(customerService.findCustomerByID(id))
                 .orElseThrow(() -> new CustomerDoesNotExistException("Customer with UUID: " + id + " does not exist."));
     }
 
-    @GetMapping(value = "/api/customers")
+    @RequestMapping(method = RequestMethod.GET)
     public Iterable<SavedCustomer> findAllCustomers() {
         return customerService.findAll();
     }
 
-    @DeleteMapping(value = "/api/customers/{id}")
+    @DeleteMapping(value = "/{id}")
     public void deleteCustomer(@PathVariable Integer id) {
-        try {
-            customerService.deleteCustomer(id);
-        } catch (CustomerDoesNotExistException e) {
-            throw new CustomerDoesNotExistException("Nie istnieje mordo");
-        }
+        customerService.deleteCustomer(id);
     }
 
-    @PostMapping(value = "/api/customers/{id}")
+    @PutMapping(value = "/{id}")
     public SavedCustomer modifyCustomer(@PathVariable Integer id, @RequestBody CustomerDTO customerDTO) {
-        return Optional.of(customerService.modifyCustomer(id, customerDTO))
-                .orElseThrow(() -> new CustomerDoesNotExistException("Customer with UUID: " + id + " does not exist."));
+        return customerService.modifyCustomer(id, customerDTO);
     }
 }
