@@ -1,12 +1,9 @@
-package com.usermap.controller;
+package com.customer_api.controller;
 
-import com.usermap.entity.CustomerDTO;
-import com.usermap.entity.SavedCustomer;
-import com.usermap.exception.CustomerDoesNotExistException;
-import com.usermap.service.CustomerService;
+import com.customer_api.entity.CustomerDTO;
+import com.customer_api.entity.SavedCustomer;
+import com.customer_api.service.CustomerService;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/customers")
@@ -25,8 +22,7 @@ public class CustomerController {
 
     @GetMapping(value = "/{id}")
     public SavedCustomer findCustomerByID(@PathVariable Integer id) {
-        return Optional.ofNullable(customerService.findCustomerByID(id))
-                .orElseThrow(() -> new CustomerDoesNotExistException("Customer with UUID: " + id + " does not exist."));
+        return customerService.findCustomerByID(id);
     }
 
     @RequestMapping(method = RequestMethod.GET)

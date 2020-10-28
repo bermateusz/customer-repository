@@ -1,6 +1,6 @@
-package com.usermap.repository;
+package com.customer_api.repository;
 
-import com.usermap.entity.SavedCustomer;
+import com.customer_api.entity.SavedCustomer;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

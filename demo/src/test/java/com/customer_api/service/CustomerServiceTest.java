@@ -1,9 +1,9 @@
-package com.usermap.service;
+package com.customer_api.service;
 
-import com.usermap.entity.CustomerDTO;
-import com.usermap.entity.SavedCustomer;
-import com.usermap.exception.CustomerDoesNotExistException;
-import com.usermap.repository.CustomerRepository;
+import com.customer_api.entity.CustomerDTO;
+import com.customer_api.entity.SavedCustomer;
+import com.customer_api.exception.CustomerDoesNotExistException;
+import com.customer_api.repository.CustomerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -77,11 +77,10 @@ class CustomerServiceTest {
         when(customerRepository.save(Mockito.any(SavedCustomer.class))).thenReturn(fixtures.savedCustomer);
 
         // when
-        assertThrows(CustomerDoesNotExistException.class, ()->customerService.modifyCustomer(fixtures.customerId, customerToUpdate));
+        assertThrows(CustomerDoesNotExistException.class, () -> customerService.modifyCustomer(fixtures.customerId, customerToUpdate));
 
         // then
         verify(customerRepository, never()).save(Mockito.any(SavedCustomer.class));
-        // zweryfikuj ze nie wywolalo sie customerRepository.save Mockito.verify()
 
     }
 
@@ -104,7 +103,7 @@ class CustomerServiceTest {
             CustomerDTO customerToUpdate = new CustomerDTO();
             customerToUpdate.setCustomerName("Piotr");
             customerToUpdate.setCustomerSurname("Nowak");
-//            customerToUpdate.setId(2);
+            customerToUpdate.setAge(23);
             customerToUpdate.setCity("Warszawa");
             customerToUpdate.setAddress("Zachodnia 30/1");
             return customerToUpdate;

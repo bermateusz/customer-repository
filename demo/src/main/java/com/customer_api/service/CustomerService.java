@@ -1,9 +1,9 @@
-package com.usermap.service;
+package com.customer_api.service;
 
-import com.usermap.entity.CustomerDTO;
-import com.usermap.entity.SavedCustomer;
-import com.usermap.exception.CustomerDoesNotExistException;
-import com.usermap.repository.CustomerRepository;
+import com.customer_api.entity.CustomerDTO;
+import com.customer_api.entity.SavedCustomer;
+import com.customer_api.exception.CustomerDoesNotExistException;
+import com.customer_api.repository.CustomerRepository;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 

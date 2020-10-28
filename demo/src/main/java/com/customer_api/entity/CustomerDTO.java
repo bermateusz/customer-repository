@@ -1,4 +1,4 @@
-package com.usermap.entity;
+package com.customer_api.entity;
 
 public class CustomerDTO {
 
